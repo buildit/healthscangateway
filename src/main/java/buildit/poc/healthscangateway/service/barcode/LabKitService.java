@@ -2,7 +2,6 @@ package buildit.poc.healthscangateway.service.barcode;
 
 import buildit.poc.healthscangateway.model.product.LabKit;
 import buildit.poc.healthscangateway.model.request.BarcodeRequest;
-import buildit.poc.healthscangateway.model.response.ConfirmationResponse;
 import buildit.poc.healthscangateway.model.session.SessionMetadata;
 import buildit.poc.healthscangateway.service.uhg.UHGGatewayAPIService;
 import buildit.poc.healthscangateway.service.uhg.model.UHGAPIResponse;
@@ -19,9 +18,8 @@ public class LabKitService implements BarcodeService, BarcodeMapper<LabKit> {
     private final SessionMetadata sessionMetadata;
 
     @Override
-    public ConfirmationResponse scanAndSave(BarcodeRequest request) {
-        UHGAPIResponse uhgResponse = uhgGatewayAPIService.saveLabKitToUHG(this.map(request));
-        return new ConfirmationResponse(uhgResponse);
+    public UHGAPIResponse scanAndSave(BarcodeRequest request) {
+        return uhgGatewayAPIService.saveLabKitToUHG(this.map(request));
     }
 
     @Override

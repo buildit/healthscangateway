@@ -3,12 +3,12 @@ package buildit.poc.healthscangateway.model.response;
 import lombok.Data;
 
 @Data
-public class WrapperResponse {
+public class WrapperResponse<T> {
     private final String status;
     private final Object data;
     private final String message;
 
-    public WrapperResponse(ConfirmationResponse confirmation) {
+    public WrapperResponse(T confirmation) {
         this.status = "success";
         this.data = confirmation;
         this.message = "Operation successful";

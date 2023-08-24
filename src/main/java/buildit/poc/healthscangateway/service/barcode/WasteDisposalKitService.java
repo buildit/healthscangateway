@@ -2,7 +2,6 @@ package buildit.poc.healthscangateway.service.barcode;
 
 import buildit.poc.healthscangateway.model.product.WasteDisposalKit;
 import buildit.poc.healthscangateway.model.request.BarcodeRequest;
-import buildit.poc.healthscangateway.model.response.ConfirmationResponse;
 import buildit.poc.healthscangateway.model.session.SessionMetadata;
 import buildit.poc.healthscangateway.model.tracking.TrackingInfo;
 import buildit.poc.healthscangateway.service.uhg.UHGGatewayAPIService;
@@ -20,9 +19,8 @@ public class WasteDisposalKitService implements BarcodeService, BarcodeMapper<Wa
     private final SessionMetadata sessionMetadata;
 
     @Override
-    public ConfirmationResponse scanAndSave(BarcodeRequest request) {
-        UHGAPIResponse uhgResponse = uhgGatewayAPIService.saveWasteDisposalKitToUHG(this.map(request));
-        return new ConfirmationResponse(uhgResponse);
+    public UHGAPIResponse scanAndSave(BarcodeRequest request) {
+        return uhgGatewayAPIService.saveWasteDisposalKitToUHG(this.map(request));
     }
 
     @Override
