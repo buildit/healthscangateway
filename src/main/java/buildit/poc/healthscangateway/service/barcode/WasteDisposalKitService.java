@@ -1,11 +1,13 @@
 package buildit.poc.healthscangateway.service.barcode;
 
+import buildit.poc.healthscangateway.model.exception.UGHGatewayAPIServiceException;
+import buildit.poc.healthscangateway.model.exception.WasteDisposalKitException;
 import buildit.poc.healthscangateway.model.product.WasteDisposalKit;
 import buildit.poc.healthscangateway.model.request.BarcodeRequest;
 import buildit.poc.healthscangateway.model.session.SessionMetadata;
 import buildit.poc.healthscangateway.model.tracking.TrackingInfo;
 import buildit.poc.healthscangateway.service.uhg.UHGGatewayAPIService;
-import buildit.poc.healthscangateway.service.uhg.model.UHGAPIResponse;
+import buildit.poc.healthscangateway.service.uhg.model.UHGApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +21,14 @@ public class WasteDisposalKitService implements BarcodeService, BarcodeMapper<Wa
     private final SessionMetadata sessionMetadata;
 
     @Override
-    public UHGAPIResponse scanAndSave(BarcodeRequest request) {
+    public UHGApiResponse scanAndSave(BarcodeRequest request) throws UGHGatewayAPIServiceException {
         return uhgGatewayAPIService.saveWasteDisposalKitToUHG(this.map(request));
+    }
+
+    @Override
+    public void onError(Exception e) throws WasteDisposalKitException {
+        String message = "An error occurred while processing the waste disposal kit: %s".formatted(e.getMessage());
+        throw new WasteDisposalKitException(message, e);
     }
 
     @Override

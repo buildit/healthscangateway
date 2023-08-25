@@ -4,7 +4,7 @@ import buildit.poc.healthscangateway.model.request.BarcodeRequest;
 import buildit.poc.healthscangateway.model.response.WrapperResponse;
 import buildit.poc.healthscangateway.service.barcode.BarcodeService;
 import buildit.poc.healthscangateway.service.barcode.BarcodeServiceFactory;
-import buildit.poc.healthscangateway.service.uhg.model.UHGAPIResponse;
+import buildit.poc.healthscangateway.service.uhg.model.UHGApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,10 +21,10 @@ public class BarcodeController {
     private final BarcodeServiceFactory barcodeServiceFactory;
 
     @PostMapping("/scan")
-    public ResponseEntity<WrapperResponse<UHGAPIResponse>> scanBarcode(@RequestBody BarcodeRequest request) {
+    public ResponseEntity<WrapperResponse<UHGApiResponse>> scanBarcode(@RequestBody BarcodeRequest request) {
         try {
             BarcodeService service = barcodeServiceFactory.getService(request.category());
-            UHGAPIResponse response = service.scanAndSave(request);
+            UHGApiResponse response = service.scanAndSave(request);
             return ResponseEntity.ok(new WrapperResponse<>(response));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new WrapperResponse<>(e.getMessage()));

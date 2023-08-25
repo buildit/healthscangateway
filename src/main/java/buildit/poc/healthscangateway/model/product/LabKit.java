@@ -1,6 +1,5 @@
 package buildit.poc.healthscangateway.model.product;
 
-import buildit.poc.healthscangateway.service.uhg.model.UHGAPIInfo;
 import lombok.Builder;
 import lombok.ToString;
 import lombok.Value;
@@ -17,5 +16,4 @@ public class LabKit {
     String instructions;
     String manufacturer;
     String intendedUse;
-    UHGAPIInfo uhgAPIInfo;
 }

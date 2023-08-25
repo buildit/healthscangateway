@@ -1,10 +1,12 @@
 package buildit.poc.healthscangateway.service.barcode;
 
+import buildit.poc.healthscangateway.model.exception.MedicationException;
+import buildit.poc.healthscangateway.model.exception.UGHGatewayAPIServiceException;
 import buildit.poc.healthscangateway.model.product.Medication;
 import buildit.poc.healthscangateway.model.request.BarcodeRequest;
 import buildit.poc.healthscangateway.model.session.SessionMetadata;
 import buildit.poc.healthscangateway.service.uhg.UHGGatewayAPIService;
-import buildit.poc.healthscangateway.service.uhg.model.UHGAPIResponse;
+import buildit.poc.healthscangateway.service.uhg.model.UHGApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +18,14 @@ public class MedicationService implements BarcodeService, BarcodeMapper<Medicati
     private final SessionMetadata sessionMetadata;
 
     @Override
-    public UHGAPIResponse scanAndSave(BarcodeRequest request) {
+    public UHGApiResponse scanAndSave(BarcodeRequest request) throws UGHGatewayAPIServiceException {
         return uhgGatewayAPIService.saveMedicationToUHG(this.map(request));
+    }
+
+    @Override
+    public void onError(Exception e) throws MedicationException {
+        String message = "An error occurred while processing the medication: %s".formatted(e.getMessage());
+        throw new MedicationException(message, e);
     }
 
     @Override
