@@ -13,7 +13,7 @@ public class BarcodeServiceFactory {
 
     private final WasteDisposalKitService wasteDisposalKitService;
 
-    public BarcodeService getService(BarcodeCategory category) {
+    public BarcodeService<?> getService(BarcodeCategory category) {
         return switch (category) {
             case MEDICATION -> medicationService;
             case LAB_KIT -> labKitService;

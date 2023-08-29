@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.ToString;
 import lombok.Value;
 
+import java.time.LocalDateTime;
+
 @ToString()
 @Value()
 @Builder()
@@ -11,6 +13,6 @@ public class Medication {
     BarcodeItem barcodeItem;
     String medicineName;
     String dosage;
-    String expirationDate;
+    LocalDateTime expirationDate;
     String manufacturer;
 }
