@@ -7,19 +7,28 @@ import buildit.poc.healthscangateway.model.request.BarcodeRequest;
 import buildit.poc.healthscangateway.model.session.SessionMetadata;
 import buildit.poc.healthscangateway.service.uhg.UHGGatewayAPIService;
 import buildit.poc.healthscangateway.service.uhg.model.UHGApiResponse;
+import com.github.javafaker.Faker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
-public class MedicationService implements BarcodeService, BarcodeMapper<Medication> {
+public class MedicationService implements BarcodeService<Medication>, BarcodeMapper<Medication> {
 
     private final UHGGatewayAPIService uhgGatewayAPIService;
     private final SessionMetadata sessionMetadata;
+    private final Faker faker = new Faker();
 
     @Override
     public UHGApiResponse scanAndSave(BarcodeRequest request) throws UGHGatewayAPIServiceException {
         return uhgGatewayAPIService.saveMedicationToUHG(this.map(request));
+    }
+
+    @Override
+    public Medication getBarcodeDetails(BarcodeRequest request) {
+        return generateStub(request);
     }
 
     @Override
@@ -36,6 +45,16 @@ public class MedicationService implements BarcodeService, BarcodeMapper<Medicati
                 .manufacturer("Manufacturer")
                 .medicineName("Medicine Name")
                 .dosage("Dosage")
+                .build();
+    }
+
+    private Medication generateStub(BarcodeRequest request) {
+        return Medication.builder()
+                .barcodeItem(this.mapBarCode(request, sessionMetadata))
+                .expirationDate(LocalDateTime.now().plusDays(faker.number().numberBetween(1, 365)))
+                .manufacturer(faker.company().name())
+                .medicineName(faker.medical().medicineName())
+                .dosage(faker.number().numberBetween(1, 100) + "mg")
                 .build();
     }
 }

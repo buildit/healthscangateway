@@ -7,6 +7,7 @@ import buildit.poc.healthscangateway.model.request.BarcodeRequest;
 import buildit.poc.healthscangateway.model.session.SessionMetadata;
 import buildit.poc.healthscangateway.service.uhg.UHGGatewayAPIService;
 import buildit.poc.healthscangateway.service.uhg.model.UHGApiResponse;
+import com.github.javafaker.Faker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,14 +15,20 @@ import java.util.Arrays;
 
 @Service
 @RequiredArgsConstructor
-public class LabKitService implements BarcodeService, BarcodeMapper<LabKit> {
+public class LabKitService implements BarcodeService<LabKit>, BarcodeMapper<LabKit> {
 
     private final UHGGatewayAPIService uhgGatewayAPIService;
     private final SessionMetadata sessionMetadata;
+    private final Faker faker = new Faker();
 
     @Override
     public UHGApiResponse scanAndSave(BarcodeRequest request) throws UGHGatewayAPIServiceException {
         return uhgGatewayAPIService.saveLabKitToUHG(this.map(request));
+    }
+
+    @Override
+    public LabKit getBarcodeDetails(BarcodeRequest request) {
+        return generateStub(request);
     }
 
 
@@ -40,6 +47,17 @@ public class LabKitService implements BarcodeService, BarcodeMapper<LabKit> {
                 .instructions("Instructions")
                 .manufacturer("Manufacturer")
                 .intendedUse("Intended Use")
+                .build();
+    }
+
+    private LabKit generateStub(BarcodeRequest request) {
+        return LabKit.builder()
+                .barcodeItem(this.mapBarCode(request, sessionMetadata))
+                .kitName(faker.medical().medicineName())
+                .components(Arrays.asList(faker.commerce().material(), faker.commerce().productName()))
+                .instructions(faker.lorem().paragraph())
+                .manufacturer(faker.company().name())
+                .intendedUse(faker.commerce().department())
                 .build();
     }
 }

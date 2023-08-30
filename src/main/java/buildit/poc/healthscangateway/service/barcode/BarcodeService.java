@@ -7,8 +7,10 @@ import buildit.poc.healthscangateway.model.exception.WasteDisposalKitException;
 import buildit.poc.healthscangateway.model.request.BarcodeRequest;
 import buildit.poc.healthscangateway.service.uhg.model.UHGApiResponse;
 
-public interface BarcodeService {
+public interface BarcodeService<T> {
     UHGApiResponse scanAndSave(BarcodeRequest request) throws HealthScanGatewayException;
+
+    T getBarcodeDetails(BarcodeRequest request);
 
     void onError(Exception e) throws LabKitException, MedicationException, WasteDisposalKitException;
 }

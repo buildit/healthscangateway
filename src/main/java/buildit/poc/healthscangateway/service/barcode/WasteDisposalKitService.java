@@ -8,6 +8,7 @@ import buildit.poc.healthscangateway.model.session.SessionMetadata;
 import buildit.poc.healthscangateway.model.tracking.TrackingInfo;
 import buildit.poc.healthscangateway.service.uhg.UHGGatewayAPIService;
 import buildit.poc.healthscangateway.service.uhg.model.UHGApiResponse;
+import com.github.javafaker.Faker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,14 +16,20 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class WasteDisposalKitService implements BarcodeService, BarcodeMapper<WasteDisposalKit> {
+public class WasteDisposalKitService implements BarcodeService<WasteDisposalKit>, BarcodeMapper<WasteDisposalKit> {
 
     private final UHGGatewayAPIService uhgGatewayAPIService;
     private final SessionMetadata sessionMetadata;
+    private final Faker faker = new Faker();
 
     @Override
     public UHGApiResponse scanAndSave(BarcodeRequest request) throws UGHGatewayAPIServiceException {
         return uhgGatewayAPIService.saveWasteDisposalKitToUHG(this.map(request));
+    }
+
+    @Override
+    public WasteDisposalKit getBarcodeDetails(BarcodeRequest request) {
+        return generateStub(request);
     }
 
     @Override
@@ -40,6 +47,17 @@ public class WasteDisposalKitService implements BarcodeService, BarcodeMapper<Wa
                 .disposalInstructions("Disposal Instructions")
                 .handlingWarnings("Handling Warnings")
                 .trackingInfo(new TrackingInfo("Tracking Number", "Status", "Courier"))
+                .build();
+    }
+
+    private WasteDisposalKit generateStub(BarcodeRequest request) {
+        return WasteDisposalKit.builder()
+                .barcodeItem(this.mapBarCode(request, sessionMetadata))
+                .kitType(faker.commerce().department()) // Random kit type
+                .contents(List.of(faker.commerce().material(), faker.commerce().productName()))
+                .disposalInstructions(faker.lorem().sentence())
+                .handlingWarnings(faker.lorem().sentence())
+                .trackingInfo(new TrackingInfo(faker.code().asin(), faker.commerce().promotionCode(), faker.company().name())) // Random tracking info
                 .build();
     }
 }
